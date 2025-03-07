@@ -77,11 +77,10 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         try:
             if ser is not None:
-                # print("here")
-
+        
                 data = ser.readline().decode().strip()
                 values = data.split(",")
-                # print(values)
+                
                 if len(values) == 5:
                     temperature, moisture, humidity,water_usage,irrigation = values
                     config.CurrentSoilMoisture = int(moisture)
@@ -89,13 +88,11 @@ async def websocket_endpoint(websocket: WebSocket):
                     # Append new data
                     new_data = pd.DataFrame([[time.strftime("%H:%M:%S"), config.crop, moisture, temperature, humidity, irrigation]],columns=["Time", "Crop", "Moisture", "Temperature", "Humidity", "Irrigation"])
                     sensor_data = pd.concat([sensor_data, new_data], ignore_index=True).tail(50)  # Keep last 50 readings
-                    # print(sensor_data)
-                    # print(websocket.application_state)
-                    # print(f"Water Used:{water_usage}")
+                   
                     if websocket.application_state == WebSocketState.CONNECTED:
                         print("Sending data to Socket")
                         if not sensor_data.empty:
-                            print(sensor_data.iloc[-1])
+                           
                             row = json.dumps(sensor_data.iloc[-1].to_dict())
                         
                             response = {

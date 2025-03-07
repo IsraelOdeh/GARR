@@ -45,7 +45,7 @@ app.get("/")(lambda: {"message": "Smart Irrigation API Running"})
 app.get("/get_crops")(get_crops)
 @app.post("/set_croptype")
 async def crop_type(request: CropType):
-    print(request.crop_type)
+    
     data = await  set_croptype(request.crop_type)
     return data
 # app.get("/read_sensor")(read_sensor)

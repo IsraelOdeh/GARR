@@ -37,7 +37,6 @@ async def get_weather():
     i = 0
     date = datetime.strptime(response["days"][0]["datetime"], "%Y-%m-%d").strftime("%Y-%m-%d")
     for hour in coming_days[:3]:
-            print(hour)
             if i == 0:
                     if hour["conditions"] == "Rain":
                         config.Rain = 1
@@ -96,7 +95,7 @@ async def get_soil_properties():
         clay = (properties["layers"][0]["depths"][-1]["values"]["mean"])/10  # Clay content (%)
         sand = (properties["layers"][1]["depths"][-1]["values"]["mean"])/10  # Silt content (%)
         silt = (properties["layers"][2]["depths"][-1]["values"]["mean"])/10  # Sand content (%)
-        print(clay, sand, silt)
+       
 
         # Estimate Field Capacity (FC) and Wilting Point (WP) using Saxton & Rawls equations
         # FC = (0.31 + 0.0021 * clay) * 100  # mm/m
@@ -212,7 +211,7 @@ async def predict_moisture():
     # Input parameters
     try:
         await get_weather()
-        sand, silt, clay = get_soil_properties()
+        sand, silt, clay = await get_soil_properties()
         initial_moisture = config.CurrentSoilMoisture/100
         latitude = config.dataset["LAT"][0]
         soil_params = {
@@ -245,9 +244,19 @@ async def predict_moisture():
             model.update_moisture(weather_data['precip'][1], etc)
         ]
 
-        print(f"ET₀: {et0:.1f} mm/day → ETc: {etc*24*10:.1f} mm/day")
-        print(f"+1h: {results[0]:.3f} m³/m³, +2h: {results[1]:.3f} m³/m³")
-        return{ "1h": round(results[0],3), "2h": round(results[1],3) }
+        return{ "prediction":
+            {
+               "1h": round(results[0] *100,2) , 
+               "2h": round(results[1]* 100,2)
+            },
+            "properties": {
+               "ET": round(etc,3),
+               "Sand": sand,
+               "Silt": silt,
+                "Clay": clay
+            }
+       }
+    
     except Exception as e:
         print(f"Error: {e}")
-        return(f"Error: {e}")
+        return{f"Error: {e}"}
