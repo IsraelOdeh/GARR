@@ -7,8 +7,8 @@
         <title>Smart Irrigation Control System</title>
         <!-- <script src="https://cdn.tailwindcss.com"></script> -->
         <link rel="stylesheet" href="./src/output.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
 
     <body class="bg-gray-900 text-gray-100 min-h-screen p-6">
@@ -33,7 +33,7 @@
 
             <!-- Main Dashboard Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Weather & Soil Section -->
+                <!--Local Weather & Soil Section -->
                 <div class="bg-gray-800 p-6 rounded-xl">
                     <h2 class="text-lg font-semibold mb-4">Environmental Monitoring</h2>
                     <div class="space-y-6">
@@ -41,7 +41,7 @@
                             <div class="flex justify-between items-center">
                                 <div>
                                     <p class="text-sm text-gray-400">Soil Moisture</p>
-                                    <p class="text-4xl font-bold mt-1" id="moisture">64<span
+                                    <p class="text-4xl font-bold mt-1" id="moisture">--<span
                                             class="text-lg text-gray-400">%</span>
                                     </p>
                                 </div>
@@ -52,7 +52,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="mt-4 space-y-2">
+                            <!-- <div class="mt-4 space-y-2">
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-400">Field Capacity</span>
                                     <span>35%</span>
@@ -60,7 +60,7 @@
                                 <div class="w-full bg-gray-600 rounded-full h-1">
                                     <div class="bg-blue-500 h-1 rounded-full" style="width: 35%"></div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
@@ -69,7 +69,7 @@
                                     <i class="fas fa-tint text-blue-400 text-xl"></i>
                                     <div>
                                         <p class="text-sm text-gray-400">Humidity</p>
-                                        <p class="text-xl font-semibold" id="humidity">65%</p>
+                                        <p class="text-xl font-semibold" id="humidity">--%</p>
                                     </div>
                                 </div>
                             </div>
@@ -78,7 +78,22 @@
                                     <i class="fas fa-thermometer-half text-orange-400 text-xl"></i>
                                     <div>
                                         <p class="text-sm text-gray-400">Temperature</p>
-                                        <p class="text-xl font-semibold" id="temperature">24°C</p>
+                                        <p class="text-xl font-semibold" id="temperature">--°C</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-400">Water Usage</p>
+                                    <p class="text-4xl font-bold mt-1" id="waterUsed">--L</p>
+                                </div>
+                                <div class="relative w-16 h-16">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="radial-progress text-blue-500"
+                                            style="--value:64; --size:4rem; --thickness: 6px"></div>
                                     </div>
                                 </div>
                             </div>
@@ -101,21 +116,21 @@
 
                         <div class="bg-gray-700 p-4 rounded-lg">
                             <div class="grid grid-cols-2 gap-4 text-sm">
-                                <div>
+                                <!-- <div>
                                     <p class="text-gray-400">Water Amount</p>
                                     <p class="font-semibold">40ml/hr</p>
-                                </div>
+                                </div> -->
                                 <div>
                                     <p class="text-gray-400">Temp Range</p>
-                                    <p class="font-semibold" id="cropTemp">18-28°C</p>
+                                    <p class="font-semibold" id="cropTemp">**-**°C</p>
                                 </div>
                                 <div>
                                     <p class="text-gray-400">Humidity Range</p>
-                                    <p class="font-semibold" id="cropHumidity">40-60%</p>
+                                    <p class="font-semibold" id="cropHumidity">**-**%</p>
                                 </div>
                                 <div>
                                     <p class="text-gray-400">Soil Moisture</p>
-                                    <p class="font-semibold" id="cropMoisture">25-45%</p>
+                                    <p class="font-semibold" id="cropMoisture">**-**%</p>
                                 </div>
                             </div>
                         </div>
@@ -138,38 +153,163 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- System Control Section -->
+                <!-- Weather Forecast -->
                 <div class="bg-gray-800 p-6 rounded-xl">
-                    <h2 class="text-lg font-semibold mb-4">System Control</h2>
+                    <h2 class="text-lg font-semibold mb-4">Weather Forecast</h2>
                     <div class="space-y-6">
-                        <div class="bg-gray-700 p-4 rounded-lg text-center">
-                            <div class="inline-block relative">
-                                <div class="absolute inset-0 bg-green-500/20 blur-xl animate-pulse"></div>
-                                <button id="pumpToggle" class="relative text-6xl transition-all hover:scale-110">
-                                    <span class="text-green-400">⚡</span>
-                                </button>
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-400">Next hour:</p>
+                                    <span>
+                                        <img id="weather-icon" class='w-24 h-24' ;>
+                                    </span>
+                                </div>
+                                <div class="relative w-16 h-16">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="radial-progress text-blue-500"
+                                            style="--value:64; --size:4rem; --thickness: 6px"></div>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="mt-2 font-semibold">PUMP STATUS: <span id="pumpStatus"
-                                    class="text-green-400">ONLINE</span></p>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-gray-700 p-4 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fas fa-tint text-blue-400 text-xl"></i>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Humidity</p>
+                                            <p class="text-xl font-semibold" id="fore-humidity">--%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-700 p-4 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fas fa-thermometer-half text-orange-400 text-xl"></i>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Temperature</p>
+                                            <p class="text-xl font-semibold" id="fore-temperature">--°C</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
+
+                    </div>
+                    <div class="space-y-6">
                         <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-sm text-gray-400 mb-3">Environmental Trends</h3>
-                            <canvas id="environmentChart" class="w-full h-40"></canvas>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-400">Soil Moisture Model:</p>
+                                </div>
+                                <div class="relative w-16 h-16">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="radial-progress text-blue-500"
+                                            style="--value:64; --size:4rem; --thickness: 6px"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-gray-700 p-4 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fas fa-tint text-blue-400 text-xl"></i>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Next 1hr</p>
+                                            <p class="text-xl font-semibold" id="1hrmoist">--%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-700 p-4 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fas fa-thermometer-half text-orange-400 text-xl"></i>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Next 2hr</p>
+                                            <p class="text-xl font-semibold" id="2hrmoist">--%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- System Control Section -->
+        <div class="bg-gray-800 p-6 rounded-xl m-5 shadow-xl">
+            <h2 class="text-xl font-semibold mb-6 text-gray-100 border-b border-gray-700 pb-3">System Control</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Pump Control Card -->
+                <div class="bg-gray-750 p-5 rounded-lg transition-all hover:transform hover:scale-[1.02]">
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="relative group">
+                            <div
+                                class="absolute inset-0 bg-green-500/20 rounded-full blur-lg group-hover:blur-xl transition-all duration-300">
+                            </div>
+                            <button id="pumpToggle" class="relative text-7xl transform transition-all hover:rotate-12">
+                                <span class="text-green-400 drop-shadow-glow">⚡</span>
+                            </button>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-sm text-gray-400 mb-1">Pump Status</p>
+                            <p class="text-lg font-semibold">
+                                <span id="pumpStatus" class="text-green-400">ONLINE</span>
+                            </p>
                         </div>
                     </div>
                 </div>
+
+                <!-- Water Usage Card -->
+                <!-- <div class="bg-gray-750 p-5 rounded-lg flex flex-col justify-center">
+                    <div class="text-center space-y-3">
+                        <div class="flex items-center justify-center space-x-2">
+                            <i class="fas fa-water text-blue-400 text-xl"></i>
+                            <p class="text-sm text-gray-400">Total Water Usage</p>
+                        </div>
+                        <div class="text-3xl font-bold text-blue-400" id="waterUsed">1200 L</div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: 65%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500">65% of monthly allocation used</p>
+                    </div>
+                </div> -->
+
+                <!-- Connection Status Card -->
+                <div class="md:col-span-2 bg-gray-750 p-5 rounded-lg">
+                    <div class="flex items-center justify-center space-x-3">
+                        <div class="relative">
+                            <div id="connectionPulse"
+                                class="absolute inset-0 bg-green-500/20 rounded-full animate-ping"></div>
+                            <div class="w-6 h-6 rounded-full bg-green-500 relative flex items-center justify-center">
+                                <span class="text-white text-sm">🔗</span>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-sm text-gray-400">System Connection</p>
+                            <p class="font-semibold">
+                                <span id="connectionStatus" class="text-green-400">Connected</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Environmental Trends -->
+                <div class="md:col-span-2 bg-gray-750 p-5 rounded-lg">
+                    <h3 class="text-sm text-gray-400 mb-4">Environmental Trends</h3>
+                    <canvas id="environmentChart" class="w-full h-48"></canvas>
+                </div>
             </div>
         </div>
-
         <script>
             // Dropdown Implementation
             const states = [
                 { state: 'Abia', capital: 'Umuahia' }, { state: 'Adamawa', capital: 'Yola' },
                 { state: 'Lagos', capital: 'Ikeja' }, { state: 'Kaduna', capital: 'Kaduna' }
             ];
-
+            let df = [];  // Initialize empty array
+            const ctx = document.getElementById("environmentChart").getContext("2d");
             const dropdownButton = document.getElementById('dropdownButton');
             const dropdownMenu = document.getElementById('dropdownMenu');
             const stateList = document.getElementById('stateList');
@@ -184,6 +324,23 @@
                 };
                 stateList.appendChild(li);
             });
+
+
+            // Create Chart
+            let myChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: "Temperature", data: [], borderColor: "red", fill: false },
+                        { label: "Humidity", data: [], borderColor: "blue", fill: false },
+                        { label: "Moisture", data: [], borderColor: "green", fill: false }
+                    ]
+                },
+                options: { responsive: true, scales: { x: { title: { display: true, text: "Time" } } } }
+            });
+
+
 
             document.addEventListener('click', (e) => {
                 if (!dropdownButton.contains(e.target)) {
@@ -242,40 +399,60 @@
             });
 
 
+            async function fetchMoistureForecast() {
+                try {
+                    const response = await fetch("http://localhost:8000/moisture_forecast");
+                    const data = await response.json();
+                    console.log(data);
 
-            // Environment Chart
-            //new Chart(document.getElementById('environmentChart'), {
-            //    type: 'line',
-            //    data: {
-            //        labels: ['12am', '4am', '8am', '12pm', '4pm', '8pm'],
-            //        datasets: [{
-            //            label: 'Temperature',
-            //            data: [18, 16, 22, 28, 26, 24],
-            //            borderColor: '#F59E0B',
-            //            tension: 0.4
-            //        }, {
-            //            label: 'Humidity',
-            //            data: [65, 70, 60, 55, 50, 60],
-            //            borderColor: '#3B82F6',
-            //            tension: 0.4
-            //        }, {
-            //            label: 'Soil Moisture',
-            //            data: [40, 38, 45, 42, 40, 38],
-            //            borderColor: '#10B981',
-            //            tension: 0.4
-            //        }]
-            //    },
-            //    options: {
-            //        responsive: true,
-            //        maintainAspectRatio: false,
-            //        plugins: { legend: { labels: { color: '#E5E7EB' } } },
-            //        scales: {
-            //            x: { grid: { color: '#374151' }, ticks: { color: '#9CA3AF' } },
-            //            y: { grid: { color: '#374151' }, ticks: { color: '#9CA3AF' } }
-            //        }
-            //    }
-            //});
+                    const first = document.getElementById("1hrmoist");
+                    const second = document.getElementById("2hrmoist");
 
+
+
+
+
+
+                    //first.innerText = data.humidity + "%";
+                    //second.innerText = data.temperature + "°C";
+                } catch (error) {
+                    console.error("Error fetching forecast data:", error);
+                }
+            }
+            fetchMoistureForecast();
+
+            async function fetchWeatherForecast() {
+                try {
+                    const response = await fetch("http://localhost:8000/forecast");
+                    const data = await response.json();
+                    console.log(data);
+
+                    const weatherIcon = document.getElementById("weather-icon");
+                    const future_humidity = document.getElementById("fore-humidity");
+                    const future_temperature = document.getElementById("fore-temperature");
+
+                    //const img = document.createElement('img');
+                    weatherIcon.src = './src/Assets/Sets/' + data["forecast"][0]["icon"] + '.png';
+                    //img.alt = 'Weather Icon';
+                    //img.className = 'w-8 h-8';
+                    //weatherIcon.innerHTML = '';
+                    //weatherIcon.appendChild(img);
+                    //console.log(weatherIcon)
+                    //console.log(img)
+
+
+                    future_humidity.textContent = data["forecast"][0]["RH"] + "%";
+                    console.log(data["forecast"][0])
+                    future_temperature.textContent = data["forecast"][0]["TEMP"] + "°C";
+
+                    document.getElementById("weather-icon").innerText = data.humidity + "%";
+                    document.getElementById("temperature").innerText = data.temperature + "°C";
+                } catch (error) {
+                    console.error("Error fetching forecast data:", error);
+                }
+            }
+
+            fetchWeatherForecast();
 
             async function fetchCropList() {
                 try {
@@ -304,6 +481,8 @@
 
             socket.onopen = function () {
                 console.log("WebSocket Connected");
+                //state = document.getElementById("connState")
+                //state.innerText = ""
             };
 
             socket.onclose = function () {
@@ -311,26 +490,63 @@
             };
 
             socket.onmessage = function (event) {
-                let moisture = event.data;
+                let moisture = JSON.parse(event.data);
                 console.log(moisture);
-                let [temperatureValue, moistureValue, humidityValue, waterUsage, irrigationStatus, RainStatus] = moisture.split(',');
+
+
+
+
+
+                temperatureValue = moisture.temperature
+                moistureValue = moisture.moisture
+                humidityValue = moisture.humidity
+                waterUsage = moisture.water_usage
+                irrigationStatus = moisture.irrigation
+                RainStatus = moisture.rain
+                dataRow = JSON.parse(moisture.row)
+                //JSON.
+
                 // {temperature},{moisture},{humidity},{waterUsage},{config.Rain}")
                 document.getElementById("moisture").innerText = moistureValue + "%";
                 document.getElementById("humidity").innerText = humidityValue + "%";
                 document.getElementById("temperature").innerText = temperatureValue + "°C";
-
+                document.getElementById("waterUsed").innerText = waterUsage + "L"
+                console.log(dataRow)
                 // Update pump status based on irrigation status
                 if (irrigationStatus.trim() == "1") {
                     pumpToggle.querySelector('span').style.color = '#34D399';
                     pumpStatus.textContent = 'ONLINE';
                     pumpStatus.style.color = '#34D399';
-                } else {
+                }
+                else {
                     pumpToggle.querySelector('span').style.color = '#EF4444';
                     pumpStatus.textContent = 'OFFLINE';
                     pumpStatus.style.color = '#EF4444';
                 }
-            };
 
+
+                // Add data
+                addRow(dataRow["Time"], dataRow["Crop"], dataRow["Moisture"], dataRow["Temperature"], dataRow["Humidity"], dataRow["Irrigation"]);
+
+                console.log(df);  // Print the "DataFrame"
+
+
+                // Update Chart Data
+                myChart.data.labels.push(dataRow["Time"]);
+                myChart.data.datasets[0].data.push(dataRow["Temperature"]);
+                myChart.data.datasets[1].data.push(dataRow["Humidity"]);
+                myChart.data.datasets[2].data.push(dataRow["Moisture"]);
+
+                // Redraw Chart
+                myChart.update();
+
+
+
+            }
+            // Function to add a row
+            function addRow(time, crop, moisture, temp, humidity, irrigation) {
+                df.push({ Time: time, Crop: crop, moisture: moisture, temperature: temp, humidity: humidity, irrigation: irrigation });
+            }
             socket.onerror = function (error) {
                 console.error("WebSocket Error:", error);
             };

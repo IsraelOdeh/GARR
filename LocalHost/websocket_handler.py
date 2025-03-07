@@ -1,4 +1,5 @@
 import asyncio
+import json
 import pandas as pd
 import time
 import serial
@@ -23,7 +24,7 @@ time.sleep(2)
 #             return {"temperature": temperature, "moisture": moisture, "humidity": humidity, "irrigation": irrigation}
 #     return {"error": "No data received"}
 
-def push_2_mc(min_threshold, max_threshold, rain):
+async def push_2_mc(min_threshold, max_threshold, rain):
     data = f"{min_threshold},{max_threshold},{rain}\n"
     ser.write(data.encode())
     # print("Data pushed to microcontroller")
@@ -93,10 +94,27 @@ async def websocket_endpoint(websocket: WebSocket):
                     # print(f"Water Used:{water_usage}")
                     if websocket.application_state == WebSocketState.CONNECTED:
                         print("Sending data to Socket")
-                        await websocket.send_text(f"{temperature},{moisture},{humidity},{water_usage},{irrigation},{config.Rain}")
+                        if not sensor_data.empty:
+                            print(sensor_data.iloc[-1])
+                            row = json.dumps(sensor_data.iloc[-1].to_dict())
+                        
+                            response = {
+                                "temperature":temperature,
+                                "moisture": moisture,
+                                "humidity": humidity,
+                                "water_usage": water_usage,
+                                "irrigation": irrigation,
+                                "rain": config.Rain,
+                                "row": row
+                                    }
+
+                            await websocket.send_text(json.dumps(response))
+                            
+                        else:
+                            print("Error: sensor_data DataFrame is empty! Cannot send last row.")
                 
-                push_2_mc(config.min_threshold,config.max_threshold,config.Rain)
-            await asyncio.sleep(0.1)  # Prevent CPU overuse
+               
+                await asyncio.sleep(0.1)  # Prevent CPU overuse
         except WebSocketDisconnect:
             print("Client disconnected, stopping data transmission.")
         except Exception as e:
@@ -104,5 +122,7 @@ async def websocket_endpoint(websocket: WebSocket):
             break
     
 
-
+async def to_mc():
+     await push_2_mc(config.min_threshold,config.max_threshold,config.Rain)
+     await asyncio.sleep(4)
 
