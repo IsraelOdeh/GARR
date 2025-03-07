@@ -5,7 +5,7 @@ import time
 import serial
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi.websockets import WebSocketState
-import config
+import LocalHost.config as config
 
 
 SERIAL_PORT = "COM2"

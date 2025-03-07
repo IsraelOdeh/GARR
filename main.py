@@ -6,25 +6,15 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 
-from websocket_handler import  websocket_endpoint
-from weather import  get_soil_properties, get_weather, predict_moisture
-from crop_data import get_crops, set_croptype
+from LocalHost.websocket_handler import  websocket_endpoint
+from LocalHost.weather import  get_soil_properties, get_weather, predict_moisture
+from LocalHost.crop_data import get_crops, set_croptype
 
 
-# ngrok.set_auth_token("2tiPuZueOT7lygddUceX6cYsZdU_6A27SFURDL9iM48fPPVYm")
-# Setup ngrok tunnel
-# public_url = ngrok.connect(8000, hostname="up-cobra-hardy.ngrok-free.app").public_url
-# print(f"Public URL: {public_url}")
 
 app = FastAPI()
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],  # Allow all origins (or specify ["http://localhost:8000"])
-#     allow_credentials=True,
-#     allow_methods=["*"],   # Allow all methods (GET, POST, etc.)
-#     allow_headers=["*"],   # Allow all headers
-# )
+
 @app.middleware("http")
 async def log_request_time(request:
     Request, call_next):
@@ -57,8 +47,8 @@ app.websocket("/ws")(websocket_endpoint)
 
 def open_browser():
     time.sleep(1)
-    webbrowser.open("http://localhost:8000/static/r.html")
+    webbrowser.open("http://localhost:8000/static/index.html")
 
 if __name__ == "__main__":
     threading.Thread(target=open_browser).start()
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="debug")
+    uvicorn.run(app, host="0.0.0.0", port=8000)

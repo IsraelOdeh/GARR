@@ -5,9 +5,9 @@ import pandas as pd
 from pyeto import deg2rad, et_rad, inv_rel_dist_earth_sun, sol_dec, sunset_hour_angle
 import requests
 import math
-import crop_data
-import config
-from websocket_handler import push_2_mc
+import LocalHost.crop_data as crop_data
+import LocalHost.config as config
+from LocalHost.websocket_handler import push_2_mc
 
 CITY = "Minna"
 URL = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Minna?unitGroup=metric&key=HSEZGHEEGJ9NXYNHXFL4LVMLF&include=fcst%2Chours%2Ccurrent"
@@ -79,7 +79,7 @@ crop = "Wheat"
 growth_stage = "mid"
 
 
-kc_values =  json.load(open("crop_threshold.json"))["kc_values"]
+kc_values =  json.load(open("database/crop_threshold.json"))["kc_values"]
 
 
 async def get_soil_properties():
@@ -87,7 +87,7 @@ async def get_soil_properties():
     # SOILGRIDS_URL = f"https://rest.isric.org/soilgrids/v2.0/properties/query?lon=9.61373&lat=6.54367&property=clay&property=silt&property=sand&depth=5-15cm&value=mean"
     try:
         # response = requests.get(SOILGRIDS_URL).json()
-        response = json.load(open("soil.json"))
+        response = json.load(open("database/soil.json"))
         
         properties = response["properties"]
     

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Smart Irrigation Control System</title>
+        <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+        <link rel="stylesheet" href="./src/output.css">
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+
+    <body class="bg-gray-900 text-gray-100 min-h-screen p-6">
+        <!-- Main Container -->
+        <div class="max-w-6xl mx-auto mb-5">
+            <!-- Header Section -->
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold">Irrigation Control Dashboard</h1>
+                <div class="relative">
+                    <button id="dropdownButton" disabled
+                        class="px-4 py-2 bg-gray-800 rounded-lg flex items-center gap-2 hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Minna, Nig.</span>
+                        <i class="fas fa-chevron-down text-sm"></i>
+                    </button>
+                    <div id="dropdownMenu"
+                        class="hidden absolute right-0 mt-2 bg-gray-800 rounded-lg shadow-xl w-48 z-10">
+                        <ul id="stateList" class="max-h-60 overflow-y-auto"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Dashboard Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!--Local Weather & Soil Section -->
+                <div class="bg-gray-800 p-6 rounded-xl">
+                    <h2 class="text-lg font-semibold mb-4">Environmental Monitoring</h2>
+                    <div class="space-y-6">
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-400">Soil Moisture</p>
+                                    <p class="text-4xl font-bold mt-1" id="moisture">--<span
+                                            class="text-lg text-gray-400">%</span>
+                                    </p>
+                                </div>
+                                <div class="relative w-16 h-16">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="radial-progress text-blue-500"
+                                            style="--value:64; --size:4rem; --thickness: 6px"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-gray-700 p-4 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-tint text-xl"></i>
+                                    <div>
+                                        <p class="text-sm text-gray-400">Humidity</p>
+                                        <p class="text-xl font-semibold" id="humidity">--%</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-700 p-4 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-thermometer-half  text-xl"></i>
+                                    <div>
+                                        <p class="text-sm text-gray-400">Temperature</p>
+                                        <p class="text-xl font-semibold " id="temperature">--°C</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-400">Water Usage</p>
+                                    <p class="text-4xl font-bold mt-1 text-emerald-500" id="waterUsed">--L</p>
+                                </div>
+                                <div class="relative w-16 h-16">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="radial-progress text-blue-500"
+                                            style="--value:64; --size:4rem; --thickness: 6px"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Crop Management Section -->
+                <div class="bg-gray-800 p-6 rounded-xl">
+                    <h2 class="text-lg font-semibold mb-4">Crop Management</h2>
+                    <div class="space-y-6">
+                        <select id="cropSelect"
+                            class="w-full bg-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-blue-500">
+                            <option disabled selected>Select Crop Type</option>
+
+                        </select>
+
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+
+                                <div>
+                                    <p class="text-gray-400">Temp Range</p>
+                                    <p class="font-semibold" id="cropTemp">**-**°C</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400">Humidity Range</p>
+                                    <p class="font-semibold" id="cropHumidity">**-**%</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400">Soil Moisture</p>
+                                    <p class="font-semibold" id="cropMoisture">**-**%</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-400">Clay Percent</p>
+                                    <p class="font-semibold" id="clayper">40ml/hr</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400">Sand Percent</p>
+                                    <p class="font-semibold" id="sandper">20°C - 30°C</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400">Silt Percent</p>
+                                    <p class="font-semibold" id="siltper">20% - 30%</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400">Evapotranspiration</p>
+                                    <p class="font-semibold" id="Et">60% - 80%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Weather Forecast -->
+                <div class="bg-gray-800 p-6 rounded-xl">
+                    <h2 class="text-lg font-semibold mb-4">Weather Forecast</h2>
+                    <div class="space-y-6 mb-4">
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="flex">
+                                        <p class="text-2xl text-gray-400">Next hour:</p>
+                                        <p class=" text-gray-400 text-2xl" id="weather"></p>
+                                    </div>
+                                    <span>
+                                        <img id="weather-icon" class='w-30 h-30' ;>
+                                    </span>
+                                </div>
+                                <div class="relative w-16 h-16">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="radial-progress text-blue-500"
+                                            style="--value:64; --size:4rem; --thickness: 6px"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-gray-700 p-4 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fas fa-tint text-blue-400 text-xl"></i>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Humidity</p>
+                                            <p class="text-xl font-semibold" id="fore-humidity">--%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-700 p-4 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fas fa-thermometer-half text-orange-400 text-xl"></i>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Temperature</p>
+                                            <p class="text-xl font-semibold" id="fore-temperature">--°C</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="space-y-6 mt-5">
+                        <div class="bg-gray-700 p-4 rounded-lg">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class=" text-gray-400 text-2xl">Soil Moisture Forecast:</p>
+                                </div>
+                                <div class="relative w-16 h-16">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="radial-progress text-blue-500"
+                                            style="--value:64; --size:4rem; --thickness: 6px"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-gray-700 p-4 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fas fa-tint text-blue-400 text-xl"></i>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Next 1hr:</p>
+                                            <p class="text-xl font-semibold" id="1hrmoist">--%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-700 p-4 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fas fa-thermometer-half text-orange-400 text-xl"></i>
+                                        <div>
+                                            <p class="text-sm text-gray-400">Next 2hr:</p>
+                                            <p class="text-xl font-semibold" id="2hrmoist">--%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- System Control Section -->
+        <div class="bg-gray-800 p-6 rounded-xl mt-5 shadow-xl" style="
+        margin-top: 25px;
+    ">
+            <h2 class="text-xl font-semibold mb-6 text-gray-100 border-b border-gray-700 pb-3">System Control</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Pump Control Card -->
+                <div class="bg-gray-750 p-5 rounded-lg transition-all hover:transform hover:scale-[1.02]">
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="relative group">
+                            <div
+                                class="absolute inset-0 bg-green-500/20 rounded-full blur-lg group-hover:blur-xl transition-all duration-300">
+                            </div>
+                            <button id="pumpToggle" class="relative text-7xl transform transition-all hover:rotate-12">
+                                <span class="text-green-400 drop-shadow-glow">⚡</span>
+                            </button>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-sm text-gray-400 mb-1">Pump Status</p>
+                            <p class="text-lg font-semibold">
+                                <span id="pumpStatus" class="text-green-400">ONLINE</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Water Usage Card -->
+                <!-- <div class="bg-gray-750 p-5 rounded-lg flex flex-col justify-center">
+                    <div class="text-center space-y-3">
+                        <div class="flex items-center justify-center space-x-2">
+                            <i class="fas fa-water text-blue-400 text-xl"></i>
+                            <p class="text-sm text-gray-400">Total Water Usage</p>
+                        </div>
+                        <div class="text-3xl font-bold text-blue-400" id="waterUsed">1200 L</div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: 65%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500">65% of monthly allocation used</p>
+                    </div>
+                </div> -->
+
+                <!-- Connection Status Card -->
+                <div class="md:col-span-2 bg-gray-750 p-5 rounded-lg">
+                    <div class="flex items-center justify-center space-x-3">
+                        <div class="relative">
+                            <div id="connectionPulse"
+                                class="absolute inset-0 bg-green-500/20 rounded-full animate-ping"></div>
+                            <div class="w-6 h-6 rounded-full bg-green-500 relative flex items-center justify-center">
+                                <span class="text-white text-sm">🔗</span>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-sm text-gray-400">System Connection</p>
+                            <p class="font-semibold">
+                                <span id="connectionStatus" class="text-green-400">Connected</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Environmental Trends -->
+                <div class="md:col-span-2 bg-gray-750 p-5 rounded-lg">
+                    <h3 class="text-sm text-gray-400 mb-4">Environmental Trends</h3>
+                    <canvas id="environmentChart" class="w-full h-48"></canvas>
+                </div>
+            </div>
+        </div>
+        <script>
+            // Dropdown Implementation
+            const states = [
+                { state: 'Abia', capital: 'Umuahia' }, { state: 'Adamawa', capital: 'Yola' },
+                { state: 'Lagos', capital: 'Ikeja' }, { state: 'Kaduna', capital: 'Kaduna' }
+            ];
+            let df = [];  // Initialize empty array
+            const ctx = document.getElementById("environmentChart").getContext("2d");
+            const dropdownButton = document.getElementById('dropdownButton');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            const stateList = document.getElementById('stateList');
+
+            states.forEach(({ state, capital }) => {
+                const li = document.createElement('li');
+                li.className = 'p-3 hover:bg-gray-700 cursor-pointer transition-colors text-sm';
+                li.textContent = `${state}, ${capital}`;
+                li.onclick = () => {
+                    dropdownButton.querySelector('span').textContent = `${state}, ${capital}`;
+                    dropdownMenu.classList.add('hidden');
+                };
+                stateList.appendChild(li);
+            });
+
+
+            // Create Chart
+            let myChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: "Temperature", data: [], borderColor: "red", fill: false },
+                        { label: "Humidity", data: [], borderColor: "blue", fill: false },
+                        { label: "Moisture", data: [], borderColor: "green", fill: false }
+                    ]
+                },
+                options: { responsive: true, scales: { x: { title: { display: true, text: "Time" } } } }
+            });
+
+
+
+            document.addEventListener('click', (e) => {
+                if (!dropdownButton.contains(e.target)) {
+                    dropdownMenu.classList.add('hidden');
+                }
+            });
+
+            dropdownButton.onclick = (e) => {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('hidden');
+            };
+
+
+            // Pump Control
+            const pumpToggle = document.getElementById('pumpToggle');
+            const pumpStatus = document.getElementById('pumpStatus');
+
+
+            document.getElementById('cropSelect').addEventListener('change', function () {
+                const selectedCrop = this.value;
+
+
+                fetch('http://localhost:8000/set_croptype', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ "crop_type": selectedCrop })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+
+                        //document.getElementById('cropHumidity').textContent = data.humidity_range;
+                        document.getElementById('cropTemp').textContent = data["temp_range"][0] + "°C - " + data["temp_range"][1] + "°C";
+                        document.getElementById('cropHumidity').textContent = data["humidity_range"][0] + "% - " + data["humidity_range"][1] + "%";
+                        document.getElementById('cropMoisture').textContent = data["moisture"][0] + "% - " + data["moisture"][1] + "%";
+
+                    })
+                    .catch(error => {
+                        console.error('Error updating crop:', error);
+                    });
+
+            });
+
+
+            async function fetchMoistureForecast() {
+                try {
+                    const response = await fetch("http://localhost:8000/moisture_forecast");
+                    const data = await response.json();
+
+
+                    const first = document.getElementById("1hrmoist");
+                    const second = document.getElementById("2hrmoist");
+                    const clay = document.getElementById("clayper");
+                    const sand = document.getElementById("sandper");
+                    const silt = document.getElementById("siltper");
+                    const et = document.getElementById("Et");
+
+                    console.log(data)
+                    first.textContent = data["prediction"]["1h"] + "%";
+                    second.innerText = data["prediction"]["2h"] + "%";
+                    silt.textContent = data["properties"]["Silt"] + "%";
+                    sand.textContent = data["properties"]["Sand"] + "%";
+                    clay.textContent = data["properties"]["Clay"] + "%"; + "%";
+                    et.textContent = data["properties"]["ET"] + "mm/day";
+                } catch (error) {
+                    console.error("Error fetching forecast data:", error);
+                }
+            }
+
+            fetchMoistureForecast();
+
+            async function fetchWeatherForecast() {
+                try {
+                    const response = await fetch("http://localhost:8000/forecast");
+                    const data = await response.json();
+
+
+                    const weatherIcon = document.getElementById("weather-icon");
+                    const weather = document.getElementById("weather");
+                    const future_humidity = document.getElementById("fore-humidity");
+                    const future_temperature = document.getElementById("fore-temperature");
+
+                    //const img = document.createElement('img');
+                    weatherIcon.src = './src/Assets/Sets/' + data["forecast"][0]["icon"] + '.png';
+                    weather.textContent = data["forecast"][0]["condition"]
+                    //img.alt = 'Weather Icon';
+                    //img.className = 'w-8 h-8';
+                    //weatherIcon.innerHTML = '';
+                    //weatherIcon.appendChild(img);
+                    //console.log(weatherIcon)
+                    //console.log(img)
+
+
+                    future_humidity.textContent = data["forecast"][0]["RH"] + "%";
+
+                    future_temperature.textContent = data["forecast"][0]["TEMP"] + "°C";
+
+                    document.getElementById("weather-icon").innerText = data.humidity + "%";
+                    document.getElementById("temperature").innerText = data.temperature + "°C";
+                } catch (error) {
+                    console.error("Error fetching forecast data:", error);
+                }
+            }
+
+            fetchWeatherForecast();
+
+            async function fetchCropList() {
+                try {
+                    const response = await fetch("http://localhost:8000/get_crops"); // API from Flask
+
+                    const data = await response.json();
+
+                    const cropTypeSelect = document.getElementById("cropSelect");
+                    data.crops.forEach(crop => {
+                        document.getElementById("cropSelect").innerHTML += `<option>${crop}</option>`;
+
+                    });
+                } catch (error) {
+                    console.error("Error fetching crop list:", error);
+                }
+            }
+
+            fetchCropList()
+
+
+            const socket = new WebSocket("ws://localhost:8000/ws");
+
+            socket.onopen = function () {
+                console.log("WebSocket Connected");
+                //state = document.getElementById("connState")
+                //state.innerText = ""
+            };
+
+            socket.onclose = function () {
+                console.log("WebSocket disConnected");
+            };
+
+            socket.onmessage = function (event) {
+                let moisture = JSON.parse(event.data);
+
+                irrigationStatus = moisture.irrigation
+                temperatureValue = moisture.temperature
+                moistureValue = moisture.moisture
+                humidityValue = moisture.humidity
+                waterUsage = moisture.water_usage
+
+                RainStatus = moisture.rain
+                dataRow = JSON.parse(moisture.row)
+                //JSON.
+
+                // {temperature},{moisture},{humidity},{waterUsage},{config.Rain}")
+                document.getElementById("moisture").innerText = moistureValue + "%";
+                document.getElementById("humidity").innerText = humidityValue + "%";
+                document.getElementById("temperature").innerText = temperatureValue + "°C";
+                document.getElementById("waterUsed").innerText = waterUsage + "L"
+
+                // Update pump status based on irrigation status
+                if (irrigationStatus.trim() == "1") {
+                    pumpToggle.querySelector('span').style.color = '#34D399';
+                    pumpStatus.textContent = 'ONLINE';
+                    pumpStatus.style.color = '#34D399';
+                }
+                else {
+                    pumpToggle.querySelector('span').style.color = '#EF4444';
+                    pumpStatus.textContent = 'OFFLINE';
+                    pumpStatus.style.color = '#EF4444';
+                }
+
+
+                // Add data
+                addRow(dataRow["Time"], dataRow["Crop"], dataRow["Moisture"], dataRow["Temperature"], dataRow["Humidity"], dataRow["Irrigation"]);
+
+
+                // Update Chart Data
+                myChart.data.labels.push(dataRow["Time"]);
+                myChart.data.datasets[0].data.push(dataRow["Temperature"]);
+                myChart.data.datasets[1].data.push(dataRow["Humidity"]);
+                myChart.data.datasets[2].data.push(dataRow["Moisture"]);
+
+                // Redraw Chart
+                myChart.update();
+
+
+
+            }
+            // Function to add a row
+            function addRow(time, crop, moisture, temp, humidity, irrigation) {
+                df.push({ Time: time, Crop: crop, moisture: moisture, temperature: temp, humidity: humidity, irrigation: irrigation });
+            }
+            socket.onerror = function (error) {
+                console.error("WebSocket Error:", error);
+            };
+
+
+        </script>
+    </body>
+
+</html>
