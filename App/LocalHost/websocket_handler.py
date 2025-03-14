@@ -1,5 +1,6 @@
 import asyncio
 import json
+import sys
 import pandas as pd
 import time
 import serial
@@ -11,15 +12,17 @@ import LocalHost.config as config
 SERIAL_PORT = "COM2"
 BAUD_RATE = 9600
 CurrentSoilMoisture = 0
-
-ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
+try:
+    ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
+except Exception as e:
+    print(f"Failed to connect to serial port {SERIAL_PORT} with baud rate {BAUD_RATE}: {e}\nENSURE THE PORT IS SET UP IN VSPE AND IT IS UNOCCUPIED.")
+    sys.exit(1)
 time.sleep(2)
 
 
 async def push_2_mc(min_threshold, max_threshold, rain):
     data = f"{min_threshold},{max_threshold},{rain}\n"
     ser.write(data.encode())
-    # print("Data pushed to microcontroller")
 
 sensor_data = pd.DataFrame(columns=["Time", "Crop", "Moisture", "Temperature", "Humidity", "Irrigation"])
 

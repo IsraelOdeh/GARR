@@ -1,3 +1,5 @@
+from pathlib import Path
+import sys
 import time
 import threading
 import webbrowser
@@ -25,7 +27,8 @@ async def log_request_time(request:
     return response
 
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+SCRIPT_DIR = Path(__file__).resolve().parent
+app.mount("/static", StaticFiles(directory= SCRIPT_DIR / "static"), name="static")
 
 class CropType(BaseModel):
     crop_type: str
@@ -50,4 +53,8 @@ def open_browser():
 
 if __name__ == "__main__":
     threading.Thread(target=open_browser).start()
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    try:
+        uvicorn.run(app, host="0.0.0.0", port=8000)
+    except Exception as e:
+        print(f"Failed to start server: {e}")
+        sys.exit(1)
