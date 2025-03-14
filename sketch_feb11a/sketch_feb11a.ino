@@ -144,14 +144,20 @@ void loop(){
 
 //MAIN WORKING
 void condition(){
-  if (moist_percent<min_threshold){
+  if (moist_percent<min_threshold && rain == 0){
     // LCD_3();
     // digitalWrite(tank_pump,LOW);
     irrigating = 1;
     digitalWrite(watering_pump,HIGH);
     delay(10);
   }
-
+  else if (moist_percent<min_threshold && rain == 1){
+    // LCD_3();
+    // digitalWrite(tank_pump,LOW);
+    irrigating = 0;
+    digitalWrite(watering_pump,LOW);
+    delay(10);
+  }
   else if (moist_percent>max_threshold){
     // LCD_2();
     // digitalWrite(tank_pump,HIGH);

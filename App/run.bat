@@ -1,6 +1,8 @@
 @echo off
 REM Get the directory of this batch file
 set "SCRIPT_DIR=%~dp0"
+echo Running Script "%SCRIPT_DIR%main.py"...
+"%SCRIPT_DIR%venv\Scripts\python.exe" "%SCRIPT_DIR%main.py"
 
 REM Path to the virtual environment's Python executable
 set "VENV_PYTHON=%SCRIPT_DIR%venv\Scripts\python.exe"
